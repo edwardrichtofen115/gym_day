@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "425406155781",
+    "project_id": "gym-day-1d352",
+    "storage_bucket": "gym-day-1d352.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425406155781:android:fe5649449e667a1c76206c",
+        "android_client_info": {
+          "package_name": "com.sudhanshubaluja.gym_day"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "425406155781-svnvuaivrnmfngbt365ho6om513l08ef.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-XHvARSskksaEhP1k4Dw0DE-2F-r8Pjk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "425406155781-svnvuaivrnmfngbt365ho6om513l08ef.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
