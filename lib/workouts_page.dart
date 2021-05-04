@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -19,19 +20,60 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
 
     return Scaffold(
       body: FutureBuilder(
-        future: getWorkouts(),
+        future: workouts,
         builder: (context, snapshot) {
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data.length > 0) {
             // ignore: missing_return
             return ListView(children: [
               Column(
                 children: snapshot.data,
               ),
             ]);
-          } else {
-            return Text(
-                'No workouts added yet. Check in your workouts to see them here.');
-          }
+            // ignore: missing_return
+          } else if (snapshot.data == null) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.cloudDownloadAlt,
+                  size: 70.0,
+                ),
+                SizedBox(
+                  height: 50.0,
+                ),
+                Center(
+                  child: Text(
+                    'Data being fetched. Please wait',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else if (snapshot.data.length == 0) {
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.sadCry,
+                  size: 70.0,
+                ),
+                SizedBox(
+                  height: 50.0,
+                ),
+                Center(
+                  child: Text(
+                    'No workouts exist yet.\n\nCheck in to see your workouts',
+                    style: TextStyle(
+                      fontSize: 20.0,
+                    ),
+                  ),
+                ),
+              ],
+            );
+          } else
+            return Text('Error');
         },
       ),
     );
@@ -41,6 +83,7 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
 class CustomWorkoutWidget extends StatelessWidget {
   CustomWorkoutWidget(
       {this.workoutName, this.workoutLocation, this.workoutDateTime});
+
   final String workoutName;
   final String workoutLocation;
   final Timestamp workoutDateTime;
@@ -61,7 +104,11 @@ class CustomWorkoutWidget extends StatelessWidget {
 
 Future<List<CustomWorkoutWidget>> getWorkouts() async {
   List<CustomWorkoutWidget> workouts = [];
-  await _firestore.collection('workouts').get().then((value) {
+  await _firestore
+      .collection('workouts')
+      .orderBy('dateTime', descending: true)
+      .get()
+      .then((value) {
     value.docs.forEach((element) {
       if (element.data()['user'] == _auth.currentUser.email) {
         final temp = CustomWorkoutWidget(
@@ -73,6 +120,10 @@ Future<List<CustomWorkoutWidget>> getWorkouts() async {
       }
     });
   });
+
+  // if(workouts.isEmpty)
+  //   return [Text('No data exists for you. Please check in to see your data')];
+  // else
 
   return workouts;
 }

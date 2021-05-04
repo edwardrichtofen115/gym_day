@@ -1,6 +1,7 @@
 import 'package:date_time_picker/date_time_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:io' show Platform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -36,6 +37,7 @@ class CheckinFormState extends State<CheckinForm> {
       key: _formKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: <Widget>[
           Padding(
             padding:
@@ -102,61 +104,94 @@ class CheckinFormState extends State<CheckinForm> {
             ),
           ),
           Padding(
-            padding:
-                const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
-            child: DateTimePicker(
-              type: DateTimePickerType.dateTimeSeparate,
-              initialValue: dateTime.toString(),
-              firstDate: DateTime(2000),
-              lastDate: DateTime(2100),
-              icon: Icon(Icons.event),
-              dateLabelText: 'Date of workout',
-              timeLabelText: 'Time of workout',
-              onChanged: (value) {
-                dateTime = DateTime.parse(value);
-              },
-              onSaved: (value) {
-                dateTime = DateTime.parse(value);
-              },
-            ),
-          ),
+              padding:
+                  const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+              child: DateTimePicker(
+                type: DateTimePickerType.dateTimeSeparate,
+                initialValue: dateTime.toString(),
+                firstDate: DateTime(2000),
+                lastDate: DateTime(2100),
+                icon: Icon(Icons.event),
+                dateLabelText: 'Date of workout',
+                timeLabelText: 'Time of workout',
+                onChanged: (value) {
+                  dateTime = DateTime.parse(value);
+                },
+                onSaved: (value) {
+                  dateTime = DateTime.parse(value);
+                },
+              )),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: ElevatedButton(
-              onPressed: () {
-                _firestore.collection('workouts').add({
-                  'user': _auth.currentUser.email,
-                  'workout': workout,
-                  'location': location,
-                  'dateTime': dateTime,
-                });
-                workoutTextController.clear();
-                locationTextController.clear();
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Platform.isIOS
+                  ? CupertinoButton.filled(
+                      onPressed: () {
+                        _firestore.collection('workouts').add({
+                          'user': _auth.currentUser.email,
+                          'workout': workout,
+                          'location': location,
+                          'dateTime': dateTime,
+                        });
+                        workoutTextController.clear();
+                        locationTextController.clear();
 
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    // return object of type Dialog
-                    return AlertDialog(
-                      title: new Text('Success'),
-                      content: new Text('Workout saved successfully.'),
-                      actions: <Widget>[
-                        // usually buttons at the bottom of the dialog
-                        new FlatButton(
-                          child: new Text("Close"),
-                          onPressed: () {
-                            Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              title: new Text('Success'),
+                              content: new Text('Workout saved successfully.'),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                new FlatButton(
+                                  child: new Text("Close"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
                           },
-                        ),
-                      ],
-                    );
-                  },
-                );
-                FocusScope.of(context).unfocus();
-              },
-              child: Text('Submit'),
-            ),
-          ),
+                        );
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: Text('Submit'),
+                    )
+                  : ElevatedButton(
+                      onPressed: () {
+                        _firestore.collection('workouts').add({
+                          'user': _auth.currentUser.email,
+                          'workout': workout,
+                          'location': location,
+                          'dateTime': dateTime,
+                        });
+                        workoutTextController.clear();
+                        locationTextController.clear();
+
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              title: new Text('Success'),
+                              content: new Text('Workout saved successfully.'),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                new FlatButton(
+                                  child: new Text("Close"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                        FocusScope.of(context).unfocus();
+                      },
+                      child: Text('Submit'),
+                    )),
         ],
       ),
     );
