@@ -27,7 +27,7 @@ class GymDayy extends StatelessWidget {
     return MaterialApp(
       title: 'Gym Day',
       debugShowCheckedModeBanner: false,
-      initialRoute: isUserLoggedIn ? WelcomeScreen.id : LoggedinScreen.id,
+      initialRoute: WelcomeScreen.id,
       routes: {
         WelcomeScreen.id: (context) => WelcomeScreen(),
         RegistrationScreen.id: (context) => RegistrationScreen(),
