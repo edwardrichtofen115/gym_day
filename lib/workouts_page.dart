@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +16,7 @@ class WorkoutsPage extends StatefulWidget {
 }
 
 class _WorkoutsPageState extends State<WorkoutsPage> {
+
   @override
   Widget build(BuildContext context) {
     Future<List<CustomWorkoutWidget>> workouts = getWorkouts();
@@ -80,29 +83,61 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
   }
 }
 
-class CustomWorkoutWidget extends StatelessWidget {
+class CustomWorkoutWidget extends StatefulWidget {
   CustomWorkoutWidget(
-      {this.workoutName, this.workoutLocation, this.workoutDateTime});
+      {this.workoutName, this.workoutLocation, this.workoutDateTime, this.workoutId});
 
   final String workoutName;
   final String workoutLocation;
   final Timestamp workoutDateTime;
+  final String workoutId;
 
+
+  @override
+  _CustomWorkoutWidgetState createState() => _CustomWorkoutWidgetState();
+}
+
+class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 5.0),
       child: ListTile(
         leading: FaIcon(FontAwesomeIcons.fire),
-        title: Text(workoutName),
+        trailing: FlatButton(
+          child: FaIcon(FontAwesomeIcons.times),
+          minWidth: 10.0,
+          onPressed: ()async{
+
+            String deleteID;
+             await _firestore.collection('workouts').get().then((snapshot){
+               snapshot.docs.forEach((doc) {
+                 if(doc.data()['uid'] == widget.workoutId){
+                   deleteID = doc.id;
+
+                 }
+
+               });
+             });
+
+             await _firestore.collection('workouts').doc(deleteID).delete();
+
+             print('Deleted');
+
+
+
+          },
+        ),
+        title: Text(widget.workoutName),
         subtitle: Text(
-            '${workoutLocation}, on ${workoutDateTime.toDate().day}/${workoutDateTime.toDate().month}/${workoutDateTime.toDate().year} '),
+            '${widget.workoutLocation}, on ${widget.workoutDateTime.toDate().day}/${widget.workoutDateTime.toDate().month}/${widget.workoutDateTime.toDate().year} '),
       ),
     );
   }
 }
 
 Future<List<CustomWorkoutWidget>> getWorkouts() async {
+
   List<CustomWorkoutWidget> workouts = [];
   await _firestore
       .collection('workouts')
@@ -114,7 +149,11 @@ Future<List<CustomWorkoutWidget>> getWorkouts() async {
         final temp = CustomWorkoutWidget(
             workoutName: element.data()['workout'],
             workoutLocation: element.data()['location'],
-            workoutDateTime: element.data()['dateTime']);
+            workoutDateTime: element.data()['dateTime'],
+            workoutId: element.data()['uid'],
+
+        );
+
 
         workouts.add(temp);
       }

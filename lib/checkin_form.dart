@@ -4,9 +4,10 @@ import 'package:flutter/material.dart';
 import 'dart:io' show Platform;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:uuid/uuid.dart';
 
 final _firestore = FirebaseFirestore.instance;
-
+final uuid = Uuid();
 class CheckinForm extends StatefulWidget {
   @override
   CheckinFormState createState() {
@@ -131,6 +132,10 @@ class CheckinFormState extends State<CheckinForm> {
                           'workout': workout,
                           'location': location,
                           'dateTime': dateTime,
+                          'uid' : uuid.v4()
+
+
+
                         });
                         workoutTextController.clear();
                         locationTextController.clear();
@@ -165,6 +170,7 @@ class CheckinFormState extends State<CheckinForm> {
                           'workout': workout,
                           'location': location,
                           'dateTime': dateTime,
+                          'uid' : uuid.v4(),
                         });
                         workoutTextController.clear();
                         locationTextController.clear();
@@ -191,7 +197,7 @@ class CheckinFormState extends State<CheckinForm> {
                         FocusScope.of(context).unfocus();
                       },
                       child: Text('Submit'),
-                    )),
+                    ),),
         ],
       ),
     );
