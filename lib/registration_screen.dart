@@ -27,7 +27,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       child: Scaffold(
         body: SingleChildScrollView(
           child: Container(
-            height: 900.0,
+            height: 680.0,
             padding: EdgeInsets.only(bottom: 30),
             child: Column(
               children: [

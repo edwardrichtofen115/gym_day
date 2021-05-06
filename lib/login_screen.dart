@@ -36,7 +36,7 @@ class _LoginScreenState extends State<LoginScreen> {
         body: SingleChildScrollView(
           child: Container(
             padding: EdgeInsets.only(bottom: 30),
-            height: 900.0,
+            height: 680.0,
             child: Column(
               children: [
                 HeaderContainer('Login'),
