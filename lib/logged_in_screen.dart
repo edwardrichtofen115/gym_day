@@ -59,9 +59,34 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
 
                       padding: EdgeInsets.zero,
                       onPressed: () {
-                        _auth.signOut();
-                        Navigator.pushReplacementNamed(
-                            context, LoginScreen.id);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            // return object of type Dialog
+                            return AlertDialog(
+                              title: new Text('Alert'),
+                              content: new Text('Do you really want to logout?'),
+                              actions: <Widget>[
+                                // usually buttons at the bottom of the dialog
+                                new TextButton(
+                                  child: new Text("Close"),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                new TextButton(
+                                  child: new Text("Log out"),
+                                  onPressed: () {
+                                    _auth.signOut();
+                                    Navigator.pushReplacementNamed(
+                                        context, LoginScreen.id);
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+
                       },
                       child: CircleAvatar(
                         child: Icon(

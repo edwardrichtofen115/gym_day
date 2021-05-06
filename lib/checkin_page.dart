@@ -45,11 +45,11 @@ class _CheckInPageState extends State<CheckInPage> {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 30.0,
-                color: Colors.orangeAccent,
+                color: Colors.orange,
               ),
             ),
             TextField(
-              autofocus: true,
+
               decoration: InputDecoration(
                 labelText: 'Workout',
               ),
@@ -59,7 +59,7 @@ class _CheckInPageState extends State<CheckInPage> {
               },
             ),
             TextField(
-              autofocus: true,
+
               textDirection: TextDirection.rtl,
               decoration: InputDecoration(
                 labelText: 'Enter the location',
