@@ -1,5 +1,3 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,18 +15,16 @@ class WorkoutsPage extends StatefulWidget {
 }
 
 class _WorkoutsPageState extends State<WorkoutsPage> {
-
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
       body: StreamBuilder<QuerySnapshot>(
-        stream: _firestore.collection('workouts').orderBy('dateTime').snapshots(),
+        stream:
+            _firestore.collection('workouts').orderBy('dateTime').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             final workouts = snapshot.data.docs;
-            for(var workout in workouts){
+            for (var workout in workouts) {
               print(workout.data()['workout']);
             }
             List<CustomWorkoutWidget> finalWorkouts = getWorkouts(workouts);
@@ -45,13 +41,15 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
 
 class CustomWorkoutWidget extends StatefulWidget {
   CustomWorkoutWidget(
-      {this.workoutName, this.workoutLocation, this.workoutDateTime, this.workoutId});
+      {this.workoutName,
+      this.workoutLocation,
+      this.workoutDateTime,
+      this.workoutId});
 
   final String workoutName;
   final String workoutLocation;
   final Timestamp workoutDateTime;
   final String workoutId;
-
 
   @override
   _CustomWorkoutWidgetState createState() => _CustomWorkoutWidgetState();
@@ -67,25 +65,19 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
         trailing: FlatButton(
           child: FaIcon(FontAwesomeIcons.times),
           minWidth: 10.0,
-          onPressed: ()async{
-
+          onPressed: () async {
             String deleteID;
-             await _firestore.collection('workouts').get().then((snapshot){
-               snapshot.docs.forEach((doc) {
-                 if(doc.data()['uid'] == widget.workoutId){
-                   deleteID = doc.id;
+            await _firestore.collection('workouts').get().then((snapshot) {
+              snapshot.docs.forEach((doc) {
+                if (doc.data()['uid'] == widget.workoutId) {
+                  deleteID = doc.id;
+                }
+              });
+            });
 
-                 }
+            await _firestore.collection('workouts').doc(deleteID).delete();
 
-               });
-             });
-
-             await _firestore.collection('workouts').doc(deleteID).delete();
-
-             print('Deleted');
-
-
-
+            print('Deleted');
           },
         ),
         title: Text(widget.workoutName),
@@ -96,11 +88,10 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
   }
 }
 
-List<CustomWorkoutWidget> getWorkouts(List<QueryDocumentSnapshot> workouts)  {
-
+List<CustomWorkoutWidget> getWorkouts(List<QueryDocumentSnapshot> workouts) {
   List<CustomWorkoutWidget> finalWorkouts = [];
-  for(var workout in workouts){
-    if(workout.data()['user'] == _auth.currentUser.email){
+  for (var workout in workouts) {
+    if (workout.data()['user'] == _auth.currentUser.email) {
       var temp = CustomWorkoutWidget(
         workoutId: workout.data()['uid'],
         workoutName: workout.data()['workout'],

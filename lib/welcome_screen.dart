@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,50 +10,55 @@ import 'package:gym_day/registration_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static String id = 'welcome_screen';
+
   @override
   _WelcomeScreenState createState() => _WelcomeScreenState();
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    Timer(const Duration(milliseconds: 3000), () {
+      // Navigator.push(
+      //     context, MaterialPageRoute(builder: (context) => LoginScreen()));
+      Navigator.pushNamed(context, LoginScreen.id);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orangeAccent,
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 24.0),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+              colors: [Colors.orange, Colors.deepOrange],
+              end: Alignment.bottomCenter,
+              begin: Alignment.topCenter),
+        ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                FaIcon(FontAwesomeIcons.dumbbell, size: 40.0),
-                SizedBox(width: 20.0),
-                Text('Gym Day',
-                    style: TextStyle(
-                      fontSize: 45.0,
-                      fontWeight: FontWeight.w900,
-                    ))
-              ],
+            Image.asset(
+              "assets/images/logo3.png",
+              color: Colors.white,
+            ),
+            Text(
+              'Gym Day',
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 50.0,
+                  fontFamily: 'Dancing Script'),
             ),
             SizedBox(
-              height: 45.0,
+              height: 20.0,
             ),
-            RoundedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, LoginScreen.id);
-              },
-              title: 'Login',
-              colour: Colors.black,
-            ),
-            RoundedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, RegistrationScreen.id);
-              },
-              title: 'Register',
-              colour: Colors.black,
+            Text(
+              'Keep Gyming, Keep Tracking',
+              style: TextStyle(
+                  color: Colors.white38,
+                  fontSize: 30.0,
+                  fontFamily: 'Dancing Script'),
             )
           ],
         ),
