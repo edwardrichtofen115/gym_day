@@ -76,8 +76,12 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                                 ),
                                 new TextButton(
                                   child: new Text("Log out"),
-                                  onPressed: () {
-                                    _auth.signOut();
+                                  onPressed: () async{
+
+
+                                   await _auth.signOut();
+
+
                                     Navigator.pushReplacementNamed(
                                         context, LoginScreen.id);
                                   },
