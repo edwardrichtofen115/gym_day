@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cool_alert/cool_alert.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,13 +37,11 @@ class _WorkoutsPageState extends State<WorkoutsPage>{
       child: Scaffold(
         body: StreamBuilder<QuerySnapshot>(
           stream:
-              _firestore.collection('workouts').orderBy('dateTime').snapshots(),
+              _firestore.collection('workouts').orderBy('dateTime', descending: true).snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final workouts = snapshot.data.docs;
-              for (var workout in workouts) {
-                print(workout.data()['workout']);
-              }
+
               List<CustomWorkoutWidget> finalWorkouts = getWorkouts(workouts, user_email);
               return ListView(
                 children: finalWorkouts,
@@ -65,7 +64,7 @@ class _WorkoutsPageState extends State<WorkoutsPage>{
       }else{
         user_email = _auth.currentUser.email;
       }
-      print(user_email);
+      // print(user_email);
 
     });
 
@@ -102,7 +101,7 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
       child: ListTile(
         leading: FaIcon(FontAwesomeIcons.fire),
         trailing: FlatButton(
-          child: FaIcon(FontAwesomeIcons.times),
+          child: Icon(Icons.delete_forever_outlined, color: Colors.black54,),
           minWidth: 10.0,
           onPressed: () async {
             showDialog(
@@ -139,10 +138,14 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
 
                           await _firestore.collection('workouts').doc(deleteID).delete();
                           // await Future.delayed(Duration(seconds: 10));
+
+
                           progress.dismiss();
 
 
-                          print('Deleted');
+
+
+                          // print('Deleted');
                         },
                       ),
                     ],
@@ -161,9 +164,9 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
 List<CustomWorkoutWidget> getWorkouts (List<QueryDocumentSnapshot> workouts, String currentUserEmail){
   List<CustomWorkoutWidget> finalWorkouts = [];
 
-  print(currentUserEmail.toString());
-  print(workouts[0].data()['user']);
-  print(currentUserEmail == workouts[0].data()['user']);
+  // print(currentUserEmail.toString());
+  // print(workouts[0].data()['user']);
+  // print(currentUserEmail == workouts[0].data()['user']);
   for (var workout in workouts) {
     if (workout.data()['user'] == currentUserEmail) {
       var temp = CustomWorkoutWidget(

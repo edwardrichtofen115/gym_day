@@ -27,7 +27,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       bool status = prefs.getBool('isLoggedIn') ?? false;
 
-      print(status);
+      // print(status);
       if(status){
         Navigator.pushNamed(context, LoggedinScreen.id);
       }else{

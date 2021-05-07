@@ -137,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 style: TextStyle(color: Colors.orange),
                                 recognizer: TapGestureRecognizer()
                                   ..onTap = () => {
-                                        print('Register'),
+                                        // print('Register'),
                                         Navigator.pushNamed(
                                             context, RegistrationScreen.id)
                                       }),
