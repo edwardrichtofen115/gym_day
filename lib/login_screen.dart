@@ -11,9 +11,10 @@ import 'constants.dart';
 import 'logged_in_screen.dart';
 
 import 'package:flutter/gestures.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 
 final _auth = FirebaseAuth.instance;
+
 class LoginScreen extends StatefulWidget {
   static String id = 'login_screen';
 
@@ -22,8 +23,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-
-
   String email;
   String password;
   bool showSpinner = false;
@@ -107,6 +106,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   );
                                   if (loggedInUser != null) {
                                     showSpinner = false;
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    prefs.setBool("isLoggedIn", true);
+                                    prefs.setString('user_email', email);
                                     Navigator.pushNamed(
                                         context, LoggedinScreen.id);
                                   }

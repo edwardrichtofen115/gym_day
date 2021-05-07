@@ -7,16 +7,29 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:gym_day/checkin_form.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 
 class WorkoutsPage extends StatefulWidget {
+
   @override
   _WorkoutsPageState createState() => _WorkoutsPageState();
 }
 
-class _WorkoutsPageState extends State<WorkoutsPage> {
+class _WorkoutsPageState extends State<WorkoutsPage>{
+  String user_email;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getUser();
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return ProgressHUD(
@@ -30,7 +43,7 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
               for (var workout in workouts) {
                 print(workout.data()['workout']);
               }
-              List<CustomWorkoutWidget> finalWorkouts = getWorkouts(workouts);
+              List<CustomWorkoutWidget> finalWorkouts = getWorkouts(workouts, user_email);
               return ListView(
                 children: finalWorkouts,
               );
@@ -40,6 +53,24 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
         ),
       ),
     );
+  }
+
+  getUser() async{
+
+    await SharedPreferences.getInstance().then((prefs){
+
+      bool status = prefs.getBool('isLoggedIn') ?? false;
+      if(status){
+        user_email = prefs.getString('user_email').toString();
+      }else{
+        user_email = _auth.currentUser.email;
+      }
+      print(user_email);
+
+    });
+
+
+
   }
 }
 
@@ -127,10 +158,14 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
   }
 }
 
-List<CustomWorkoutWidget> getWorkouts(List<QueryDocumentSnapshot> workouts) {
+List<CustomWorkoutWidget> getWorkouts (List<QueryDocumentSnapshot> workouts, String currentUserEmail){
   List<CustomWorkoutWidget> finalWorkouts = [];
+
+  print(currentUserEmail.toString());
+  print(workouts[0].data()['user']);
+  print(currentUserEmail == workouts[0].data()['user']);
   for (var workout in workouts) {
-    if (workout.data()['user'] == _auth.currentUser.email) {
+    if (workout.data()['user'] == currentUserEmail) {
       var temp = CustomWorkoutWidget(
         workoutId: workout.data()['uid'],
         workoutName: workout.data()['workout'],

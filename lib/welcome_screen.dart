@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gym_day/RoundedButton.dart';
+import 'package:gym_day/logged_in_screen.dart';
 import 'package:gym_day/login_screen.dart';
 import 'package:gym_day/registration_screen.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WelcomeScreen extends StatefulWidget {
   static String id = 'welcome_screen';
@@ -19,10 +21,19 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Timer(const Duration(milliseconds: 3000), () {
+    Timer(const Duration(milliseconds: 3000), () async {
       // Navigator.push(
       //     context, MaterialPageRoute(builder: (context) => LoginScreen()));
-      Navigator.pushNamed(context, LoginScreen.id);
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      bool status = prefs.getBool('isLoggedIn') ?? false;
+
+      print(status);
+      if(status){
+        Navigator.pushNamed(context, LoggedinScreen.id);
+      }else{
+        Navigator.pushNamed(context, LoginScreen.id);
+      }
+
     });
   }
 

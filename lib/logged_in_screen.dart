@@ -6,6 +6,7 @@ import 'package:gym_day/settings_page.dart';
 import 'package:gym_day/welcome_screen.dart';
 import 'package:gym_day/workouts_page.dart';
 import 'checkin_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoggedinScreen extends StatefulWidget {
   static String id = 'logged_in_screen';
@@ -77,9 +78,9 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                                 new TextButton(
                                   child: new Text("Log out"),
                                   onPressed: () async{
-
-
-                                   await _auth.signOut();
+                                    SharedPreferences prefs = await SharedPreferences.getInstance();
+                                    prefs?.clear();
+                                    await _auth.signOut();
 
 
                                     Navigator.pushReplacementNamed(
