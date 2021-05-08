@@ -55,7 +55,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               color: Colors.white,
             ),
             Text(
-              'Gym Day',
+              'Go Go Gym',
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 50.0,
@@ -65,7 +65,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               height: 20.0,
             ),
             Text(
-              'Keep Gyming, Keep Tracking',
+              'Keep Gyming, Keep Tracking, Keep Healthy',
               style: TextStyle(
                   color: Colors.white38,
                   fontSize: 30.0,

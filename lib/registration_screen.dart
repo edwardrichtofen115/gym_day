@@ -19,125 +19,141 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   String email;
   String password;
   bool showSpinner = false;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: showSpinner,
-      child: Scaffold(
-        body: SingleChildScrollView(
-          child: Container(
-            height: 680.0,
-            padding: EdgeInsets.only(bottom: 30),
-            child: Column(
-              children: [
-                HeaderContainer('Register'),
-                Expanded(
-                  flex: 1,
-                  child: Container(
-                    margin: EdgeInsets.only(left: 20, right: 20, top: 30),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Colors.white,
-                          ),
-                          padding: EdgeInsets.only(left: 10),
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            keyboardType: TextInputType.emailAddress,
-                            onChanged: (value) {
-                              email = value;
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Email',
-                              prefixIcon: Icon(Icons.email),
+    return Form(
+      key: _formKey,
+      child: ModalProgressHUD(
+        inAsyncCall: showSpinner,
+        child: Scaffold(
+          body: SingleChildScrollView(
+            child: Container(
+              height: 680.0,
+              padding: EdgeInsets.only(bottom: 30),
+              child: Column(
+                children: [
+                  HeaderContainer('Register'),
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 20, right: 20, top: 30),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.white,
+                            ),
+                            padding: EdgeInsets.only(left: 10),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'This field cannot be empty';
+                                }
+                                return null;
+                              },
+                              textAlign: TextAlign.center,
+                              keyboardType: TextInputType.emailAddress,
+                              onChanged: (value) {
+                                email = value;
+                              },
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Email',
+                                prefixIcon: Icon(Icons.email),
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(top: 10),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(Radius.circular(20)),
-                            color: Colors.white,
-                          ),
-                          padding: EdgeInsets.only(left: 10),
-                          child: TextField(
-                            textAlign: TextAlign.center,
-                            obscureText: true,
-                            onChanged: (value) {
-                              password = value;
-                            },
-                            decoration: InputDecoration(
-                              border: InputBorder.none,
-                              hintText: 'Password',
-                              prefixIcon: Icon(Icons.vpn_key),
+                          Container(
+                            margin: EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              color: Colors.white,
+                            ),
+                            padding: EdgeInsets.only(left: 10),
+                            child: TextFormField(
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'This field cannot be empty';
+                                }
+                                return null;
+                              },
+                              textAlign: TextAlign.center,
+                              obscureText: true,
+                              onChanged: (value) {
+                                password = value;
+                              },
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: 'Password',
+                                prefixIcon: Icon(Icons.vpn_key),
+                              ),
                             ),
                           ),
-                        ),
-                        Expanded(
-                          child: Center(
-                            child: ElevatedButton(
-                              child: Text('Register'),
-                              onPressed: () async {
-                                setState(() {
-                                  showSpinner = true;
-                                });
-                                try {
+                          Expanded(
+                            child: Center(
+                              child: ElevatedButton(
+                                child: Text('Register'),
+                                onPressed: () async {
                                   setState(() {
                                     showSpinner = true;
                                   });
+                                  try {
+                                    setState(() {
+                                      showSpinner = true;
+                                    });
 
-                                  final newUser =
-                                      await _auth.createUserWithEmailAndPassword(
-                                    email: email,
-                                    password: password,
-                                  );
-                                  if (newUser != null) {
-                                    showSpinner = false;
-                                    Navigator.pushNamed(
-                                        context, LoggedinScreen.id);
+                                    final newUser =
+                                        await _auth.createUserWithEmailAndPassword(
+                                      email: email,
+                                      password: password,
+                                    );
+                                    if (newUser != null) {
+                                      showSpinner = false;
+                                      Navigator.pushNamed(
+                                          context, LoginScreen.id);
+                                    }
+                                    setState(() {
+                                      showSpinner = false;
+                                    });
+                                  } catch (e) {
+                                    String _errorDescription = e.toString();
+                                    setState(() {
+                                      showSpinner = false;
+                                    });
+                                    _showDialog(_errorDescription);
+                                    print(e);
                                   }
-                                  setState(() {
-                                    showSpinner = false;
-                                  });
-                                } catch (e) {
-                                  String _errorDescription = e.toString();
-                                  setState(() {
-                                    showSpinner = false;
-                                  });
-                                  _showDialog(_errorDescription);
-                                  print(e);
-                                }
-                              },
+                                },
+                              ),
                             ),
                           ),
-                        ),
-                        RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                                text: "Already have an account ?  ",
-                                style: TextStyle(color: Colors.black)),
-                            TextSpan(
-                                text: "Log in here",
-                                style: TextStyle(color: Colors.orange),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () => {
-                                        print('Log In'),
-                                        Navigator.pushNamed(
-                                            context, LoginScreen.id)
-                                      }),
-                          ]),
-                        )
-                      ],
+                          RichText(
+                            text: TextSpan(children: [
+                              TextSpan(
+                                  text: "Already have an account ?  ",
+                                  style: TextStyle(color: Colors.black)),
+                              TextSpan(
+                                  text: "Log in here",
+                                  style: TextStyle(color: Colors.orange),
+                                  recognizer: TapGestureRecognizer()
+                                    ..onTap = () => {
+                                          print('Log In'),
+                                          Navigator.pushNamed(
+                                              context, LoginScreen.id)
+                                        }),
+                            ]),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

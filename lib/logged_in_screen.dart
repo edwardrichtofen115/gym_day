@@ -122,7 +122,7 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                       ),
                       SizedBox(width: 20.0,),
                       Text(
-                        'Gym Day',
+                        'Go Go Gym',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 50.0,
