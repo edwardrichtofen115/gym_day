@@ -30,109 +30,126 @@ class _CheckInPageState extends State<CheckInPage> {
     super.initState();
     getUser();
   }
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xff757575),
+
+    return Form(
+      key: _formKey,
       child: Container(
-        padding: EdgeInsets.all(20.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0),
+        color: Color(0xff757575),
+        child: Container(
+          padding: EdgeInsets.all(20.0),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(20.0),
+              topRight: Radius.circular(20.0),
+            ),
           ),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              'Add Workout',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 30.0,
-                color: Colors.orange,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(
+                'Add Workout',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20.0,
+                  color: Colors.black54,
+                ),
               ),
-            ),
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'Workout',
+              TextFormField(
+                validator: (value){
+                  if(value == null || value.isEmpty){
+                    return 'This field cannot be empty';
+                  }
+                  return null;
+                },
+                decoration: InputDecoration(
+                  labelText: 'Workout',
+                ),
+                textAlign: TextAlign.center,
+                onChanged: (newText) {
+                  workout = newText;
+                },
               ),
-              textAlign: TextAlign.center,
-              onChanged: (newText) {
-                workout = newText;
-              },
-            ),
-            TextField(
-              textDirection: TextDirection.rtl,
-              decoration: InputDecoration(
-                labelText: 'Enter the location',
+              TextFormField(
+                validator: (value){
+                  if(value == null || value.isEmpty){
+                    return 'This field cannot be empty';
+                  }
+                  return null;
+                },
+                textDirection: TextDirection.rtl,
+                decoration: InputDecoration(
+                  labelText: 'Enter the location',
+                ),
+                textAlign: TextAlign.center,
+                onChanged: (newText) {
+                  location = newText;
+                },
               ),
-              textAlign: TextAlign.center,
-              onChanged: (newText) {
-                location = newText;
-              },
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            Center(
-                child: Text(
-              'Date and Time of workout',
-              style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w700),
-            )),
-            SizedBox(
-              height: 130.0,
-              child: Platform.isIOS
-                  ? CupertinoDatePicker(onDateTimeChanged: (value) {
-                      // print(value);
-                      dateTime = value;
-                    })
-                  : DateTimePicker(
-                      type: DateTimePickerType.dateTimeSeparate,
-                      initialValue: dateTime.toString(),
-                      firstDate: DateTime(2000),
-                      lastDate: DateTime(2100),
-                      icon: Icon(Icons.event),
-                      dateLabelText: 'Date of workout',
-                      timeLabelText: 'Time of workout',
-                      onChanged: (value) {
-                        dateTime = DateTime.parse(value);
-                      },
-                    ),
-            ),
-            SizedBox(
-              height: 20.0,
-            ),
-            ElevatedButton(
-                child: Text('Add Workout'),
-                onPressed: () {
-                  // CoolAlert.show(context: context, type: CoolAlertType.success, text: 'Workout added successfully');
-                  // print(workout);
-                  // print(location);
-                  // print(dateTime);
-                  _firestore.collection('workouts').add({
-                    'user': user_email,
-                    'workout': workout,
-                    'location': location,
-                    'dateTime': dateTime,
-                    'uid': uuid.v4(),
-                  });
-                  Navigator.pop(context);
-                  CoolAlert.show(
-                      title: 'Success!!',
-                      context: context,
-                      type: CoolAlertType.success,
-                      text: 'Workout added successfully',
-                      confirmBtnColor: Colors.orange,
-                      backgroundColor: Colors.orange,
-                      confirmBtnText: 'Done');
-                })
-          ],
+              SizedBox(
+                height: 20.0,
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              Center(
+                  child: Text(
+                'Date and Time of workout',
+                style: TextStyle(fontSize: 15.0, fontWeight: FontWeight.w700),
+              )),
+              SizedBox(
+                height: 130.0,
+                child: Platform.isIOS
+                    ? CupertinoDatePicker(onDateTimeChanged: (value) {
+                        // print(value);
+                        dateTime = value;
+                      })
+                    : DateTimePicker(
+                        type: DateTimePickerType.dateTimeSeparate,
+                        initialValue: dateTime.toString(),
+                        firstDate: DateTime(2000),
+                        lastDate: DateTime(2100),
+                        icon: Icon(Icons.event),
+                        dateLabelText: 'Date of workout',
+                        timeLabelText: 'Time of workout',
+                        onChanged: (value) {
+                          dateTime = DateTime.parse(value);
+                        },
+                      ),
+              ),
+              SizedBox(
+                height: 20.0,
+              ),
+              ElevatedButton(
+
+                  child: Text('Add Workout'),
+                  onPressed: () {
+                    final formState = _formKey.currentState;
+                    if(formState.validate()){
+                      _firestore.collection('workouts').add({
+                        'user': user_email,
+                        'workout': workout,
+                        'location': location,
+                        'dateTime': dateTime,
+                        'uid': uuid.v4(),
+                      });
+                      Navigator.pop(context);
+                      CoolAlert.show(
+                          title: 'Success!!',
+                          context: context,
+                          type: CoolAlertType.success,
+                          text: 'Workout added successfully',
+                          confirmBtnColor: Colors.orange,
+                          backgroundColor: Colors.orange,
+                          confirmBtnText: 'Done');
+                    }
+
+                  })
+            ],
+          ),
         ),
       ),
     );

@@ -14,12 +14,11 @@ final _firestore = FirebaseFirestore.instance;
 final _auth = FirebaseAuth.instance;
 
 class WorkoutsPage extends StatefulWidget {
-
   @override
   _WorkoutsPageState createState() => _WorkoutsPageState();
 }
 
-class _WorkoutsPageState extends State<WorkoutsPage>{
+class _WorkoutsPageState extends State<WorkoutsPage> {
   String user_email;
 
   @override
@@ -29,70 +28,87 @@ class _WorkoutsPageState extends State<WorkoutsPage>{
     getUser();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return ProgressHUD(
       child: Scaffold(
         body: StreamBuilder<QuerySnapshot>(
-          stream:
-              _firestore.collection('workouts').orderBy('dateTime', descending: true).snapshots(),
+          stream: _firestore
+              .collection('workouts')
+              .orderBy('dateTime', descending: true)
+              .snapshots(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final workouts = snapshot.data.docs;
-
-              List<CustomWorkoutWidget> finalWorkouts = getWorkouts(workouts, user_email);
+              print(workouts.length);
+              if (workouts.length <= 0) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'No workouts added ',
+                          style: TextStyle(fontSize: 20.0),
+                        ),
+                        Icon(
+                          Icons.sentiment_very_dissatisfied_outlined,
+                          size: 30.0,
+                        )
+                      ],
+                    ),
+                    Text(
+                      'Add workouts to see them here',
+                      style: TextStyle(fontSize: 20.0),
+                    )
+                  ],
+                );
+              }
+              List<CustomWorkoutWidget> finalWorkouts =
+                  getWorkouts(workouts, user_email);
               return ListView(
                 children: finalWorkouts,
               );
             } else
-              return Text('Error');
+              return Center(child: Text('Loading, please wait', style: TextStyle(fontSize: 20.0),));
           },
         ),
       ),
     );
   }
 
-  getUser() async{
-
-    await SharedPreferences.getInstance().then((prefs){
-
+  getUser() async {
+    await SharedPreferences.getInstance().then((prefs) {
       bool status = prefs.getBool('isLoggedIn') ?? false;
-      if(status){
+      if (status) {
         user_email = prefs.getString('user_email').toString();
-      }else{
+      } else {
         user_email = _auth.currentUser.email;
       }
       // print(user_email);
-
     });
-
-
-
   }
 }
 
 class CustomWorkoutWidget extends StatefulWidget {
-  CustomWorkoutWidget(
-      {this.workoutName,
-      this.workoutLocation,
-      this.workoutDateTime,
-      this.workoutId,
-      });
+  CustomWorkoutWidget({
+    this.workoutName,
+    this.workoutLocation,
+    this.workoutDateTime,
+    this.workoutId,
+  });
 
   final String workoutName;
   final String workoutLocation;
   final Timestamp workoutDateTime;
   final String workoutId;
 
-
   @override
   _CustomWorkoutWidgetState createState() => _CustomWorkoutWidgetState();
 }
 
 class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
-
   @override
   Widget build(BuildContext context) {
     final progress = ProgressHUD.of(context);
@@ -101,7 +117,10 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
       child: ListTile(
         leading: FaIcon(FontAwesomeIcons.fire),
         trailing: FlatButton(
-          child: Icon(Icons.delete_forever_outlined, color: Colors.black54,),
+          child: Icon(
+            Icons.delete_forever_outlined,
+            color: Colors.black54,
+          ),
           minWidth: 10.0,
           onPressed: () async {
             showDialog(
@@ -136,14 +155,13 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
                             });
                           });
 
-                          await _firestore.collection('workouts').doc(deleteID).delete();
+                          await _firestore
+                              .collection('workouts')
+                              .doc(deleteID)
+                              .delete();
                           // await Future.delayed(Duration(seconds: 10));
 
-
                           progress.dismiss();
-
-
-
 
                           // print('Deleted');
                         },
@@ -161,7 +179,8 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
   }
 }
 
-List<CustomWorkoutWidget> getWorkouts (List<QueryDocumentSnapshot> workouts, String currentUserEmail){
+List<CustomWorkoutWidget> getWorkouts(
+    List<QueryDocumentSnapshot> workouts, String currentUserEmail) {
   List<CustomWorkoutWidget> finalWorkouts = [];
 
   // print(currentUserEmail.toString());
