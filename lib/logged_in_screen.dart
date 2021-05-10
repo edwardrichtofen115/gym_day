@@ -21,6 +21,7 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
 
+
   @override
   Widget build(BuildContext context) {
     
@@ -54,7 +55,7 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                   Row(
 
                     children: [
-
+                      // Text(user_email,),
                       FlatButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
@@ -152,7 +153,11 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
         ),
       ),
     );
+
+
   }
+
+
 }
 // Scaffold(
 // appBar: AppBar(
