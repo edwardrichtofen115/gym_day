@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_progress_hud/flutter_progress_hud.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,6 +10,7 @@ import 'package:gym_day/workouts_page.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'checkin_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:io' show Platform;
 
 class LoggedinScreen extends StatefulWidget {
   static String id = 'logged_in_screen';
@@ -64,7 +66,7 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                             builder: (BuildContext context) {
                               // return object of type Dialog
                               // final progress = ProgressHUD.of(context);
-                              return AlertDialog(
+                              return Platform.isAndroid ?  AlertDialog(
                                 title: new Text('Alert'),
                                 content: new Text(
                                     'Are you sure you want to logout?'),
@@ -92,6 +94,36 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                                     },
                                   ),
                                 ],
+                              ): CupertinoAlertDialog(
+
+                                    title: new Text('Alert'),
+                                content: new Text(
+                                    'Are you sure you want to logout?'),
+                                actions: <Widget>[
+                                  // usually buttons at the bottom of the dialog
+                                  new TextButton(
+                                    child: new Text("Close"),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  new TextButton(
+                                    child: new Text("Log out"),
+                                    onPressed: () async {
+                                      SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                      prefs?.clear();
+
+                                      await _auth.signOut();
+
+
+
+                                      Navigator.pushReplacementNamed(
+                                          context, LoginScreen.id);
+                                    },
+                                  ),
+                                ],
+
                               );
                             },
                           );
