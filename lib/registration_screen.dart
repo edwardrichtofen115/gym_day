@@ -128,7 +128,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                                   ],
                                                 ),
                                                 content: Text(
-                                                    'User registered successfully, now log in to start adding workouts!'),
+                                                    'User registered successfully. Log in to start adding workouts!'),
                                                 actions: [
                                                   FlatButton(
                                                       onPressed: () {
@@ -136,8 +136,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                                             context,
                                                             LoginScreen.id);
                                                       },
-                                                      child: Text(
-                                                          "Go to Login page."))
+                                                      child: Text("Log In"))
                                                 ],
                                               ));
                                     }
