@@ -45,7 +45,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           Container(
                             margin: EdgeInsets.only(top: 10),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.only(left: 10),
@@ -71,7 +72,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           Container(
                             margin: EdgeInsets.only(top: 10),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20)),
                               color: Colors.white,
                             ),
                             padding: EdgeInsets.only(left: 10),
@@ -107,15 +109,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                       showSpinner = true;
                                     });
 
-                                    final newUser =
-                                        await _auth.createUserWithEmailAndPassword(
+                                    final newUser = await _auth
+                                        .createUserWithEmailAndPassword(
                                       email: email,
                                       password: password,
                                     );
                                     if (newUser != null) {
                                       showSpinner = false;
-                                      Navigator.pushNamed(
-                                          context, LoginScreen.id);
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              AlertDialog(
+                                                title: Row(
+                                                  children: [
+                                                    Text("Success"),
+                                                    Icon(Icons
+                                                        .check_circle_rounded)
+                                                  ],
+                                                ),
+                                                content: Text(
+                                                    'User registered successfully, now log in to start adding workouts!'),
+                                                actions: [
+                                                  FlatButton(
+                                                      onPressed: () {
+                                                        Navigator.pushNamed(
+                                                            context,
+                                                            LoginScreen.id);
+                                                      },
+                                                      child: Text(
+                                                          "Go to Login page."))
+                                                ],
+                                              ));
                                     }
                                     setState(() {
                                       showSpinner = false;

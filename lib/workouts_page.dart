@@ -25,14 +25,12 @@ class WorkoutsPage extends StatefulWidget {
 class _WorkoutsPageState extends State<WorkoutsPage> {
   String user_email;
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getUser();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +44,12 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final workouts = snapshot.data.docs;
-              print(workouts.length);
-              if (workouts.length <= 0) {
+              // print(workouts.length);
+
+              List<CustomWorkoutWidget> finalWorkouts =
+                  getWorkouts(workouts, user_email);
+              print(finalWorkouts.length);
+              if (finalWorkouts.length == 0) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -55,7 +57,7 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'No workouts added ',
+                          'No workouts added yet ',
                           style: TextStyle(fontSize: 20.0),
                         ),
                         Icon(
@@ -71,13 +73,15 @@ class _WorkoutsPageState extends State<WorkoutsPage> {
                   ],
                 );
               }
-              List<CustomWorkoutWidget> finalWorkouts =
-                  getWorkouts(workouts, user_email);
               return ListView(
                 children: finalWorkouts,
               );
             } else
-              return Center(child: Text('Loading, please wait', style: TextStyle(fontSize: 20.0),));
+              return Center(
+                  child: Text(
+                'Loading, please wait',
+                style: TextStyle(fontSize: 20.0),
+              ));
           },
         ),
       ),
@@ -132,89 +136,91 @@ class _CustomWorkoutWidgetState extends State<CustomWorkoutWidget> {
             showDialog(
                 context: context,
                 builder: (BuildContext context) {
-                  return Platform.isAndroid ? AlertDialog(
-                    title: new Text('Alert'),
-                    content: new Text(
-                        'Are you sure you want to delete this workout?'),
-                    actions: <Widget>[
-                      // usually buttons at the bottom of the dialog
-                      new TextButton(
-                        child: new Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      new TextButton(
-                        child: new Text("Delete"),
-                        onPressed: () async {
-                          String deleteID;
-                          Navigator.pop(context);
-                          progress.showWithText('Deleting the workout');
-                          await _firestore
-                              .collection('workouts')
-                              .get()
-                              .then((snapshot) {
-                            snapshot.docs.forEach((doc) {
-                              if (doc.data()['uid'] == widget.workoutId) {
-                                deleteID = doc.id;
-                              }
-                            });
-                          });
+                  return Platform.isAndroid
+                      ? AlertDialog(
+                          title: new Text('Alert'),
+                          content: new Text(
+                              'Are you sure you want to delete this workout?'),
+                          actions: <Widget>[
+                            // usually buttons at the bottom of the dialog
+                            new TextButton(
+                              child: new Text("Close"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            new TextButton(
+                              child: new Text("Delete"),
+                              onPressed: () async {
+                                String deleteID;
+                                Navigator.pop(context);
+                                progress.showWithText('Deleting the workout');
+                                await _firestore
+                                    .collection('workouts')
+                                    .get()
+                                    .then((snapshot) {
+                                  snapshot.docs.forEach((doc) {
+                                    if (doc.data()['uid'] == widget.workoutId) {
+                                      deleteID = doc.id;
+                                    }
+                                  });
+                                });
 
-                          await _firestore
-                              .collection('workouts')
-                              .doc(deleteID)
-                              .delete();
-                          // await Future.delayed(Duration(seconds: 10));
+                                await _firestore
+                                    .collection('workouts')
+                                    .doc(deleteID)
+                                    .delete();
+                                // await Future.delayed(Duration(seconds: 10));
 
-                          progress.dismiss();
+                                progress.dismiss();
 
-                          // print('Deleted');
-                        },
-                      ),
-                    ],
-                  ) : CupertinoAlertDialog(
-                    title: new Text('Alert'),
-                    content: new Text(
-                        'Are you sure you want to delete this workout?'),
-                    actions: <Widget>[
-                      // usually buttons at the bottom of the dialog
-                      new TextButton(
-                        child: new Text("Close"),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      new TextButton(
-                        child: new Text("Delete"),
-                        onPressed: () async {
-                          String deleteID;
-                          Navigator.pop(context);
-                          progress.showWithText('Deleting the workout');
-                          await _firestore
-                              .collection('workouts')
-                              .get()
-                              .then((snapshot) {
-                            snapshot.docs.forEach((doc) {
-                              if (doc.data()['uid'] == widget.workoutId) {
-                                deleteID = doc.id;
-                              }
-                            });
-                          });
+                                // print('Deleted');
+                              },
+                            ),
+                          ],
+                        )
+                      : CupertinoAlertDialog(
+                          title: new Text('Alert'),
+                          content: new Text(
+                              'Are you sure you want to delete this workout?'),
+                          actions: <Widget>[
+                            // usually buttons at the bottom of the dialog
+                            new TextButton(
+                              child: new Text("Close"),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                            ),
+                            new TextButton(
+                              child: new Text("Delete"),
+                              onPressed: () async {
+                                String deleteID;
+                                Navigator.pop(context);
+                                progress.showWithText('Deleting the workout');
+                                await _firestore
+                                    .collection('workouts')
+                                    .get()
+                                    .then((snapshot) {
+                                  snapshot.docs.forEach((doc) {
+                                    if (doc.data()['uid'] == widget.workoutId) {
+                                      deleteID = doc.id;
+                                    }
+                                  });
+                                });
 
-                          await _firestore
-                              .collection('workouts')
-                              .doc(deleteID)
-                              .delete();
-                          // await Future.delayed(Duration(seconds: 10));
+                                await _firestore
+                                    .collection('workouts')
+                                    .doc(deleteID)
+                                    .delete();
+                                // await Future.delayed(Duration(seconds: 10));
 
-                          progress.dismiss();
+                                progress.dismiss();
 
-                          // print('Deleted');
-                        },
-                      ),
-                    ],
-                  );
+                                // print('Deleted');
+                              },
+                            ),
+                          ],
+                        );
                 });
           },
         ),

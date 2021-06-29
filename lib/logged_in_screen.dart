@@ -23,10 +23,8 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
 
-
   @override
   Widget build(BuildContext context) {
-    
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
@@ -55,9 +53,7 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-
                     children: [
-                      // Text(user_email,),
                       FlatButton(
                         padding: EdgeInsets.zero,
                         onPressed: () {
@@ -66,65 +62,63 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                             builder: (BuildContext context) {
                               // return object of type Dialog
                               // final progress = ProgressHUD.of(context);
-                              return Platform.isAndroid ?  AlertDialog(
-                                title: new Text('Alert'),
-                                content: new Text(
-                                    'Are you sure you want to logout?'),
-                                actions: <Widget>[
-                                  // usually buttons at the bottom of the dialog
-                                  new TextButton(
-                                    child: new Text("Close"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  new TextButton(
-                                    child: new Text("Log out"),
-                                    onPressed: () async {
-                                      SharedPreferences prefs =
-                                          await SharedPreferences.getInstance();
-                                      prefs?.clear();
+                              return Platform.isAndroid
+                                  ? AlertDialog(
+                                      title: new Text('Alert'),
+                                      content: new Text(
+                                          'Are you sure you want to logout?'),
+                                      actions: <Widget>[
+                                        // usually buttons at the bottom of the dialog
+                                        new TextButton(
+                                          child: new Text("Close"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        new TextButton(
+                                          child: new Text("Log out"),
+                                          onPressed: () async {
+                                            SharedPreferences prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            prefs?.clear();
 
-                                      await _auth.signOut();
+                                            await _auth.signOut();
 
+                                            Navigator.pushReplacementNamed(
+                                                context, LoginScreen.id);
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                  : CupertinoAlertDialog(
+                                      title: new Text('Alert'),
+                                      content: new Text(
+                                          'Are you sure you want to logout?'),
+                                      actions: <Widget>[
+                                        // usually buttons at the bottom of the dialog
+                                        new TextButton(
+                                          child: new Text("Close"),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        new TextButton(
+                                          child: new Text("Log out"),
+                                          onPressed: () async {
+                                            SharedPreferences prefs =
+                                                await SharedPreferences
+                                                    .getInstance();
+                                            prefs?.clear();
 
+                                            await _auth.signOut();
 
-                                      Navigator.pushReplacementNamed(
-                                          context, LoginScreen.id);
-                                    },
-                                  ),
-                                ],
-                              ): CupertinoAlertDialog(
-
-                                    title: new Text('Alert'),
-                                content: new Text(
-                                    'Are you sure you want to logout?'),
-                                actions: <Widget>[
-                                  // usually buttons at the bottom of the dialog
-                                  new TextButton(
-                                    child: new Text("Close"),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  new TextButton(
-                                    child: new Text("Log out"),
-                                    onPressed: () async {
-                                      SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                      prefs?.clear();
-
-                                      await _auth.signOut();
-
-
-
-                                      Navigator.pushReplacementNamed(
-                                          context, LoginScreen.id);
-                                    },
-                                  ),
-                                ],
-
-                              );
+                                            Navigator.pushReplacementNamed(
+                                                context, LoginScreen.id);
+                                          },
+                                        ),
+                                      ],
+                                    );
                             },
                           );
                         },
@@ -153,7 +147,9 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                         width: 50.0,
                         color: Colors.white,
                       ),
-                      SizedBox(width: 20.0,),
+                      SizedBox(
+                        width: 20.0,
+                      ),
                       Text(
                         'Go Go Gym',
                         style: TextStyle(
@@ -164,6 +160,18 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  SizedBox(
+                    height: 30.0,
+                  ),
+                  Text(
+                    'Logged in as:  ' + _auth.currentUser.email,
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15.0,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Dancing Script',
+                    ),
                   ),
                 ],
               ),
@@ -185,11 +193,7 @@ class _LoggedinScreenState extends State<LoggedinScreen> {
         ),
       ),
     );
-
-
   }
-
-
 }
 // Scaffold(
 // appBar: AppBar(

@@ -139,12 +139,55 @@ class _LoginScreenState extends State<LoginScreen> {
                                           showSpinner = false;
                                         });
                                       } catch (e) {
-                                        String _errorDescription = e.toString();
+                                        String _errorDescription;
                                         setState(() {
                                           showSpinner = false;
                                         });
+                                        print(e.code);
+                                        switch (e.code) {
+                                          case "ERROR_EMAIL_ALREADY_IN_USE":
+                                          case "account-exists-with-different-credential":
+                                          case "email-already-in-use":
+                                            _errorDescription =
+                                                "Email already used. Go to login page.";
+                                            break;
+                                          case "ERROR_WRONG_PASSWORD":
+                                          case "wrong-password":
+                                            _errorDescription =
+                                                "Wrong email/password combination.";
+                                            break;
+                                          case "ERROR_USER_NOT_FOUND":
+                                          case "user-not-found":
+                                            _errorDescription =
+                                                "No user found with this email.";
+                                            break;
+                                          case "ERROR_USER_DISABLED":
+                                          case "user-disabled":
+                                            _errorDescription =
+                                                "User disabled.";
+                                            break;
+                                          case "ERROR_TOO_MANY_REQUESTS":
+                                          case "operation-not-allowed":
+                                            _errorDescription =
+                                                "Too many requests to log into this account.";
+                                            break;
+                                          case "ERROR_OPERATION_NOT_ALLOWED":
+                                          case "operation-not-allowed":
+                                            _errorDescription =
+                                                "Server error, please try again later.";
+                                            break;
+                                          case "ERROR_INVALID_EMAIL":
+                                          case "invalid-email":
+                                            _errorDescription =
+                                                "Email address is invalid.";
+                                            break;
+                                          default:
+                                            _errorDescription =
+                                                "Login failed. Please try again.";
+                                            break;
+                                        }
                                         _showDialog(_errorDescription);
-                                        print(e);
+                                        print(_errorDescription);
                                       }
                                     }
                                   },

@@ -29,12 +29,11 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
       bool status = prefs.getBool('isLoggedIn') ?? false;
 
       // print(status);
-      if(status){
+      if (status) {
         Navigator.pushNamed(context, LoggedinScreen.id);
-      }else{
+      } else {
         Navigator.pushNamed(context, LoginScreen.id);
       }
-
     });
   }
 
@@ -67,15 +66,17 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
               height: 20.0,
             ),
             AnimatedTextKit(
-                animatedTexts: [
-              TyperAnimatedText('Keep Tracking, Keep Healthy',textStyle: TextStyle(
-                  color: Colors.white38,
-                  fontSize: 30.0,
-                  fontFamily: 'Dancing Script'),)
-            ],
+              animatedTexts: [
+                TyperAnimatedText(
+                  'Keep Tracking, Keep Healthy',
+                  textStyle: TextStyle(
+                      color: Colors.white38,
+                      fontSize: 30.0,
+                      fontFamily: 'Dancing Script'),
+                )
+              ],
               pause: Duration(seconds: 5),
               totalRepeatCount: 2,
-
             ),
             // Text(
             //   'Keep Tracking, Keep Healthy',
